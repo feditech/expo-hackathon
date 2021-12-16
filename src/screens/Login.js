@@ -20,13 +20,13 @@ import { LinearGradient } from "expo-linear-gradient";
 import { Ionicons } from "@expo/vector-icons";
 import { StatusBar } from "expo-status-bar";
 
-import logo from "../../assets/userlogo.png";
+import { auth, signInWithEmailAndPassword } from '../config/Firebase'
 
-const App = ({ navigation, route }) => {
+const App = ({ navigation}) => {
   const [visibility, setVisibility] = useState(true);
   const fadeAnim = useRef(new Animated.Value(0)).current;
 
-  console.log('route------------------',route)
+
 
   const fadeIn = () => {
     // Will change fadeAnim value to 1 in 5 seconds
@@ -48,15 +48,9 @@ const App = ({ navigation, route }) => {
 
   useEffect(() => {
     fadeIn();
-    // // fetchData();
-    // const willFocusSubscription = navigation.addListener("focus", () => {
-    //   // fetchData();
-
-    // });
-
-    // return willFocusSubscription;
   }, []);
 
+  // input validation
   const loginValidationSchema = yup.object().shape({
     email: yup
       .string()
@@ -67,9 +61,28 @@ const App = ({ navigation, route }) => {
       .min(8, ({ min }) => `Password must be at least ${min} characters`)
       .required("Password is required"),
   });
+
+  // firebase login method
+
+   const login =({email,password})=>{
+    signInWithEmailAndPassword(auth, email, password)
+    .then((userCredential) => {
+      // Signed in 
+      const user = userCredential.user;
+      console.log(user)
+      navigation.push('Profile')
+      // ...
+    })
+    .catch((error) => {
+      const errorCode = error.code;
+      const errorMessage = error.message;
+    });
+   }
+
+
   return (
     <>
-      <StatusBar barStyle="default" />
+      <StatusBar barStyle="dark-content" />
 
       <LinearGradient
         style={{
@@ -89,7 +102,7 @@ const App = ({ navigation, route }) => {
           <Formik
             validationSchema={loginValidationSchema}
             initialValues={{ email: "", password: "" }}
-            onSubmit={(values) => console.log(values)}
+            onSubmit={(values) => login(values)}
           >
             {({
               handleChange,

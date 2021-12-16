@@ -1,4 +1,4 @@
-import React, { useRef, useEffect } from "react";
+import React, { useRef, useEffect, } from "react";
 import {
   SafeAreaView,
   StyleSheet,
@@ -20,7 +20,13 @@ import { LinearGradient } from "expo-linear-gradient";
 import { Ionicons } from "@expo/vector-icons";
 import { StatusBar } from "expo-status-bar";
 
-import logo from "../../assets/userlogo.png";
+import {
+  createUserWithEmailAndPassword,
+  auth,
+  db,
+  doc,
+  setDoc,
+} from "../config/Firebase";
 
 const App = ({ navigation }) => {
   const [passwordVisibility, setpasswordVisibility] = useState(true);
@@ -48,13 +54,6 @@ const App = ({ navigation }) => {
 
   useEffect(() => {
     fadeIn();
-    // // fetchData();
-    // const willFocusSubscription = navigation.addListener("focus", () => {
-    //   // fetchData();
-
-    // });
-
-    // return willFocusSubscription;
   }, []);
 
   const loginValidationSchema = yup.object().shape({
@@ -79,6 +78,46 @@ const App = ({ navigation }) => {
         .oneOf([yup.ref("password")], "Both password need to be the same"),
     }),
   });
+
+  const register = ({ email, password, userName }) => {
+    // console.log(email)
+    
+      createUserWithEmailAndPassword(auth, email, password)
+        .then(async (res) => {
+          // console.log('$$$$$$$$$$$$$$$$$$$$$$$$$$$$',res.user.uid)
+          let dbRef = doc(db, "users", res.user.uid);
+          await setDoc(dbRef, {
+            uid: res.user.uid,
+            username: userName,
+            email: email,
+            password: password,
+          })
+          .then(() => {
+            navigation.push("Profile")
+            console.log("fire store p gya");
+          });
+        })
+        .catch((err) => {
+          // setLoading(false)
+          console.log("masla agaya==>", err);
+        });
+    
+ 
+  };
+
+  // .then((userCredential) => {
+  //   // Signed in
+  //   const user = userCredential.user;
+  //   console.log(user)
+  //   navigation.push('Profile')
+  //   // ...
+  // })
+  // .catch((error) => {
+  //   const errorCode = error.code;
+  //   const errorMessage = error.message;
+  //   // ..
+  // });
+
   return (
     <>
       <StatusBar barStyle="default" />
@@ -101,7 +140,7 @@ const App = ({ navigation }) => {
           <Formik
             validationSchema={loginValidationSchema}
             initialValues={{ userName: "", email: "", password: "" }}
-            onSubmit={(values) => console.log(values)}
+            onSubmit={(values) => register(values)}
           >
             {({
               handleChange,
