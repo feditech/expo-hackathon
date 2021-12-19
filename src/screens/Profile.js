@@ -21,12 +21,14 @@ import { Ionicons } from "@expo/vector-icons";
 import { StatusBar } from "expo-status-bar";
 
 import { auth, signInWithEmailAndPassword } from '../config/Firebase'
+import MyTabs from "../config/BottomNavigation";
 
-const App = ({ navigation}) => {
+const App = (props) => {
 //   const [visibility, setVisibility] = useState(true);
   const fadeAnim = useRef(new Animated.Value(0)).current;
 
-
+  
+  // console.log(props.navigation)
 
   const fadeIn = () => {
     // Will change fadeAnim value to 1 in 5 seconds
@@ -46,44 +48,7 @@ const App = ({ navigation}) => {
  
   
   return (
-   
-      <LinearGradient
-        style={{
-          flex: 1,
-          margin: 0,
-          padding: 0,
-          justifyContent: "center",
-          alignItems: "center",
-        }}
-        colors={["rgba(234, 57, 56, 0.8)", "rgba(13, 43, 85, 0.8)"]}
-      >
-                <Animated.View
-                  style={[
-                    {
-                      // Bind opacity to animated value
-                      opacity: fadeAnim,
-                    },
-                  ]}
-                >
-                </Animated.View>
-
-        <View
-            style={{
-              justifyContent: "center",
-              alignItems: "center",
-              flexDirection: "row",
-              marginTop: 20,
-            }}
-          >
-            <Text style={{ color: "#fff" }}>Not a member ? </Text>
-            <TouchableOpacity onPress={() => navigation.push("Signup")}>
-              <Text style={{ fontWeight: "700", color: "#fff" }}>
-                Signup Now
-              </Text>
-            </TouchableOpacity>
-          </View>
-      </LinearGradient>
-   
+     <MyTabs branch={props.route.params.branch} navigation={props.navigation} />
   );
 };
 

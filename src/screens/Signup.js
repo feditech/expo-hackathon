@@ -26,6 +26,11 @@ import {
   db,
   doc,
   setDoc,
+  getDocs,
+  collection,
+  where,
+  query
+ 
 } from "../config/Firebase";
 
 const App = ({ navigation }) => {
@@ -105,18 +110,39 @@ const App = ({ navigation }) => {
  
   };
 
-  // .then((userCredential) => {
-  //   // Signed in
-  //   const user = userCredential.user;
-  //   console.log(user)
-  //   navigation.push('Profile')
-  //   // ...
-  // })
-  // .catch((error) => {
-  //   const errorCode = error.code;
-  //   const errorMessage = error.message;
-  //   // ..
-  // });
+//   const abc = async () =>{
+//     console.log("ABCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC")
+
+//     const querySnapshot = await getDocs(collection(db, "users"));
+// querySnapshot.forEach((doc) => {
+//   console.log(doc.id, " => ", doc.data());
+// });
+
+//   } 
+
+//   abc();
+  
+const abc = async () =>{
+  console.log("fffffffffffffffffffffffffffffffff");
+  // const querySnapshot = await getDocs(collection(db, "users") where('email' , '==', 'test@g.com'));
+  // querySnapshot.forEach((doc) => {
+  // console.log(doc.id, " => ", doc.data());
+
+// });
+
+  const q = query(collection(db, "users"), where('email' , '==', 'test@g.com'));
+
+  const querySnapshot = await getDocs(q);
+  querySnapshot.forEach((doc) => {
+    // doc.data() is never undefined for query doc snapshots
+    console.log(doc.id, " => ", doc.data());
+  });
+
+
+
+} 
+
+abc();
 
   return (
     <>
@@ -296,6 +322,10 @@ const App = ({ navigation }) => {
               </>
             )}
           </Formik>
+
+
+
+
         </View>
         <View
           style={{

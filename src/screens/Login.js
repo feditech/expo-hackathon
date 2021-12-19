@@ -69,8 +69,8 @@ const App = ({ navigation}) => {
     .then((userCredential) => {
       // Signed in 
       const user = userCredential.user;
-      console.log(user)
-      navigation.push('Profile')
+      // console.log(user)
+      navigation.push('Map')
       // ...
     })
     .catch((error) => {
